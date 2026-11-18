@@ -1,0 +1,5 @@
+Charcoal publisher code and workflow are licensed under Apache-2.0 (LICENSE).
+
+Third-party filter lists retain their upstream licenses and attribution. Each
+entry in filters/sources.json and the release bundle identifies its source and
+license URL. Charcoal normalizes line endings and removes duplicate rules.

@@ -1,9 +1,23 @@
+# SPDX-License-Identifier: Apache-2.0
 import copy
 import unittest
-from build import build, originals, simplify
+from build import build, originals, simplify, fetch
+from unittest.mock import patch
+from subprocess import CompletedProcess
 
 
 class BundleTest(unittest.TestCase):
+    def test_permanent_http_error_fails_even_with_cached_input(self):
+        source = dict(id="example", group="example", url="https://example.com/list")
+        previous = build([source], None, lambda _: "||example.org^")
+        for code in ("403", "404"):
+            with self.subTest(code=code), patch("build.subprocess.run", return_value=CompletedProcess([], 0, stderr=code)) as run:
+                with self.assertRaisesRegex(RuntimeError, f"example: HTTP {code} at https://example.com/list"):
+                    build([source], previous, fetch)
+                run.assert_called_once()
+                args = run.call_args.args[0]
+                self.assertLessEqual(float(args[args.index("--max-time") + 1]), 30)
+
     def test_directives_and_attribution_survive_repetition(self):
         raw = "#Copyright\n#Copyright\n!#if\tenv_firefox\nr\nr\n!#else\nr\n!#endif comment\nr\nr"
         text, removed = simplify(raw, {}, 0)

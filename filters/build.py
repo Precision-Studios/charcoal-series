@@ -1,4 +1,5 @@
-"""Build the Charcoal filter release using only Python's standard library."""
+# SPDX-License-Identifier: Apache-2.0
+"""Build the Charcoal filter release."""
 import concurrent.futures
 import gzip
 import hashlib
@@ -7,7 +8,8 @@ import os
 from pathlib import Path
 import re
 import time
-from urllib.request import Request, urlopen
+import subprocess
+import tempfile
 
 ASSET = "filters-v1.json.gz"
 TRUSTED = {"ublock-filters", "ublock-privacy", "ublock-badware", "ublock-quick-fixes", "ublock-unbreak"}
@@ -19,13 +21,27 @@ def digest(text):
 
 
 def fetch(source):
+    deadline = time.monotonic() + 30
     for attempt in range(3):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError("30-second source deadline exceeded")
         try:
-            request = Request(source["url"], headers={"User-Agent": "CharcoalBrowser filter publisher"})
-            with urlopen(request, timeout=45) as response:
-                if not response.url.startswith("https://"):
-                    raise ValueError("non-HTTPS redirect")
-                data = response.read(LIMIT + 1)
+            with tempfile.TemporaryFile() as body:
+                request = subprocess.run(
+                    ["curl", "--silent", "--show-error", "--location", "--proto", "=https",
+                     "--proto-redir", "=https", "--max-time", str(remaining),
+                     "--max-filesize", str(LIMIT), "--user-agent", "CharcoalBrowser filter publisher",
+                     "--output", "-", "--write-out", "%{stderr}\n%{http_code}",
+                     "--", source["url"]], stdout=body, stderr=subprocess.PIPE, text=True,
+                )
+                status = request.stderr.splitlines()[-1] if request.stderr else ""
+                if status in {"403", "404"}:
+                    raise RuntimeError(f'{source["id"]}: HTTP {status} at {source["url"]}')
+                if request.returncode or not status.startswith("2"):
+                    raise OSError(f"curl exit {request.returncode}, HTTP {status}")
+                body.seek(0)
+                data = body.read(LIMIT + 1)
             if len(data) > LIMIT:
                 raise ValueError("oversized list")
             text = data.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n")
@@ -36,7 +52,7 @@ def fetch(source):
         except (OSError, ValueError) as error:
             if attempt == 2:
                 raise
-            time.sleep(2 ** attempt)
+            time.sleep(min(2 ** attempt, max(0, deadline - time.monotonic())))
 
 
 def simplify(raw, seen, source_index):
