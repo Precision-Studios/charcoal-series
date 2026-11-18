@@ -1,0 +1,37 @@
+name: Weekly filter bundle
+on:
+  schedule:
+    - cron: '23 3 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: weekly-filter-bundle
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test bundle builder
+        run: python3 -m unittest discover -s filters
+      - name: Retrieve previous validated inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          releases=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq '.[] | select(.draft == false and (.tag_name | startswith("filters-v1-"))) | .tag_name')
+          previous=$(head -n 1 <<< "$releases")
+          if [[ -n "$previous" ]]; then
+            gh release download "$previous" --pattern filters-v1.json.gz --dir previous
+          fi
+      - name: Build filter bundle
+        run: python3 filters/build.py
+      - name: Publish validated bundle
+        if: hashFiles('filters-v1.json.gz') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "filters-v1-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" filters-v1.json.gz \
+            --target "$GITHUB_SHA" --latest --title "Charcoal filter lists $(date -u +%F)" \
+            --notes "Weekly filter bundle. Source attribution and checksums are included in the asset."

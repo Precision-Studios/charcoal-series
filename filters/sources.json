@@ -1,0 +1,134 @@
+[
+  {
+    "id": "easylist",
+    "group": "easylist",
+    "title": "EasyList",
+    "url": "https://ublockorigin.github.io/uAssets/thirdparties/easylist.txt"
+  },
+  {
+    "id": "easyprivacy",
+    "group": "easylist",
+    "title": "EasyPrivacy",
+    "url": "https://ublockorigin.github.io/uAssets/thirdparties/easyprivacy.txt"
+  },
+  {
+    "id": "easylist-cookie",
+    "group": "fanboy",
+    "title": "EasyList Cookie Notices",
+    "url": "https://ublockorigin.github.io/uAssets/thirdparties/easylist-cookies.txt"
+  },
+  {
+    "id": "fanboy-annoyance",
+    "group": "fanboy",
+    "title": "Fanboy Annoyance",
+    "url": "https://filters.adtidy.org/extension/ublock/filters/122.txt"
+  },
+  {
+    "id": "fanboy-social",
+    "group": "fanboy",
+    "title": "Fanboy Social",
+    "url": "https://ublockorigin.github.io/uAssets/thirdparties/easylist-social.txt"
+  },
+  {
+    "id": "indianlist",
+    "group": "indianlist",
+    "title": "IndianList",
+    "url": "https://easylist-downloads.adblockplus.org/indianlist.txt"
+  },
+  {
+    "id": "peter-lowe",
+    "group": "peter-lowe",
+    "title": "Peter Lowe's Ad and Tracking Server List",
+    "url": "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/ThirdParty/filter_204_PeterLowesList/filter.txt"
+  },
+  {
+    "id": "ublock-filters",
+    "group": "ublock",
+    "title": "uBlock Filters",
+    "url": "https://ublockorigin.github.io/uAssetsCDN/filters/filters.min.txt"
+  },
+  {
+    "id": "ublock-privacy",
+    "group": "ublock",
+    "title": "uBlock Privacy",
+    "url": "https://ublockorigin.github.io/uAssetsCDN/filters/privacy.min.txt"
+  },
+  {
+    "id": "ublock-badware",
+    "group": "ublock",
+    "title": "uBlock Badware Risks",
+    "url": "https://ublockorigin.github.io/uAssetsCDN/filters/badware.min.txt"
+  },
+  {
+    "id": "ublock-quick-fixes",
+    "group": "ublock",
+    "title": "uBlock Quick Fixes",
+    "url": "https://ublockorigin.github.io/uAssetsCDN/filters/quick-fixes.min.txt"
+  },
+  {
+    "id": "ublock-unbreak",
+    "group": "ublock",
+    "title": "uBlock Unbreak",
+    "url": "https://ublockorigin.github.io/uAssetsCDN/filters/unbreak.min.txt"
+  },
+  {
+    "id": "ublock-url-tracking",
+    "group": "ublock",
+    "title": "URL Tracking Protection",
+    "url": "https://ublockorigin.github.io/uAssetsCDN/filters/privacy-removeparam.txt"
+  },
+  {
+    "id": "adguard-base",
+    "group": "adguard",
+    "title": "AdGuard Base Filter",
+    "url": "https://filters.adtidy.org/extension/ublock/filters/2_without_easylist.txt"
+  },
+  {
+    "id": "adguard-tracking",
+    "group": "adguard",
+    "title": "AdGuard Tracking Protection",
+    "url": "https://filters.adtidy.org/extension/ublock/filters/3.txt"
+  },
+  {
+    "id": "adguard-social",
+    "group": "adguard",
+    "title": "AdGuard Social Media",
+    "url": "https://filters.adtidy.org/extension/ublock/filters/4.txt"
+  },
+  {
+    "id": "adguard-mobile",
+    "group": "adguard",
+    "title": "AdGuard Mobile Ads",
+    "url": "https://filters.adtidy.org/extension/ublock/filters/11.txt"
+  },
+  {
+    "id": "adguard-annoyances",
+    "group": "adguard",
+    "title": "AdGuard Annoyances",
+    "url": "https://filters.adtidy.org/extension/ublock/filters/14.txt"
+  },
+  {
+    "id": "adguard-url-tracking",
+    "group": "adguard",
+    "title": "AdGuard URL Tracking",
+    "url": "https://filters.adtidy.org/extension/ublock/filters/17.txt"
+  },
+  {
+    "id": "adguard-cookie",
+    "group": "adguard",
+    "title": "AdGuard Cookie Notices",
+    "url": "https://filters.adtidy.org/extension/ublock/filters/18.txt"
+  },
+  {
+    "id": "urlhaus",
+    "group": "malware",
+    "title": "URLhaus Malware Domains",
+    "url": "https://curbengh.github.io/urlhaus-filter/urlhaus-filter-vivaldi-online.txt"
+  },
+  {
+    "id": "phishing-filter",
+    "group": "malware",
+    "title": "Phishing URL Blocklist",
+    "url": "https://malware-filter.gitlab.io/phishing-filter/phishing-filter.txt"
+  }
+]
