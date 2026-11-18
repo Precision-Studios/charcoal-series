@@ -1,9 +1,15 @@
 import copy
 import unittest
-from build import build, originals
+from build import build, originals, simplify
 
 
 class BundleTest(unittest.TestCase):
+    def test_directives_and_attribution_survive_repetition(self):
+        raw = "#Copyright\n#Copyright\n!#if\tenv_firefox\nr\nr\n!#else\nr\n!#endif comment\nr\nr"
+        text, removed = simplify(raw, {}, 0)
+        self.assertEqual(raw.removesuffix("\nr"), text)
+        self.assertEqual(1, len(removed))
+
     def test_scopes_recovery_and_unchanged_publication(self):
         ids = ["ublock-filters", "ublock-privacy", "ublock-url-tracking", "fanboy-social"]
         sources = [dict(id=i, group="fanboy" if i.startswith("fanboy") else "ublock",

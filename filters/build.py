@@ -49,17 +49,21 @@ def simplify(raw, seen, source_index):
         stripped = line.strip()
         multiline = continuing or stripped.endswith("\\")
         continuing = stripped.endswith("\\")
-        if stripped.startswith("!#if "):
+        directive = re.match(r"^!#(if|else|endif)\b", line) if line.startswith("!#") else None
+        if directive and directive[1] == "if":
             depth += 1
-        ordinary = (depth == 0 and not multiline and stripped and
-                    not stripped.startswith(("!", "[", "# ", "#\t")) and line == stripped)
+        # Hosts-file comments (including attribution) start with '#'. Only known
+        # generic cosmetic separators can be rules when '#' starts the line.
+        comment = line.startswith("#") and not line.startswith(("##", "#@#", "#?#", "#$#"))
+        ordinary = (depth == 0 and not multiline and stripped and not comment and
+                    not stripped.startswith(("!", "[")) and line == stripped)
         if ordinary and line in seen:
             removed.append([position, *seen[line]])
         else:
             if ordinary:
                 seen[line] = (source_index, len(kept))
             kept.append(line)
-        if stripped == "!#endif":
+        if directive and directive[1] == "endif":
             depth = max(0, depth - 1)
     return "\n".join(kept), removed
 
@@ -122,8 +126,14 @@ def main():
     if bundle == previous:
         report("The published filters are current.")
         return
+    originals(bundle)  # Check that removal references recover every input.
+    payload = json.dumps(bundle, ensure_ascii=False, separators=(",", ":")).encode()
+    if len(payload) > 256 * 1024 * 1024:
+        raise ValueError("expanded bundle exceeds Android limit")
     with open(ASSET, "wb") as file, gzip.GzipFile(filename="", fileobj=file, mode="wb", mtime=0) as output:
-        output.write(json.dumps(bundle, ensure_ascii=False, separators=(",", ":")).encode())
+        output.write(payload)
+    if Path(ASSET).stat().st_size > LIMIT:
+        raise ValueError("compressed bundle exceeds Android limit")
     report(f'Built {ASSET} with {len(catalog)} sources.')
 
 
